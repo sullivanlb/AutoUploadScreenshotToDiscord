@@ -36,7 +36,24 @@ namespace AutoUploadScreenshotToDiscord
             HotkeysManager.SetupSystemHook();
             HotkeysManager.RequiresModifierKey = false;
 
-            saveHotKey = new GlobalHotkey(ModifierKeys.None, shortcutToScreen, ScreenshotAndSendToDiscord, false);
+            if (Properties.Settings.Default.WebhookURL != null)
+            {
+                this.URLTextBox.Text = Properties.Settings.Default.WebhookURL;
+            }
+            if (Properties.Settings.Default.Filepath != null)
+            {
+                this.TempPathFileTextBox.Text = Properties.Settings.Default.Filepath;
+            }
+            if (Properties.Settings.Default.Shortcut != null)
+            {
+                KeyConverter converter = new KeyConverter();
+                Key myKey = (Key)converter.ConvertFromString(Properties.Settings.Default.Shortcut);
+
+                updateShortcut(myKey);
+                shortcutToScreen = myKey;
+
+                this.ShortcutButton.Content = shortcutToScreen;
+            }
 
             // Close hook when app close
             Closing += MainWindow_Closing;
@@ -50,7 +67,7 @@ namespace AutoUploadScreenshotToDiscord
 
             isWaitingForKey = true;
 
-            buttonClicked.Content = "Choisis ton raccourci !";
+            buttonClicked.Content = "Choose your shortcut !";
 
             await WaitForKeyPressed();
 
@@ -63,7 +80,7 @@ namespace AutoUploadScreenshotToDiscord
         {
             string filePath;
 
-            // Créer une image à partir de l'écran principal
+            // Create image from primary screen
             using (var bitmap = new Bitmap((int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight))
             {
                 using (var graphics = Graphics.FromImage(bitmap))
@@ -71,17 +88,17 @@ namespace AutoUploadScreenshotToDiscord
                     graphics.CopyFromScreen(0, 0, 0, 0, bitmap.Size);
                 }
 
-                // Convertir l'image en format BitmapSource pour l'utiliser dans WPF
+                // Convert image to BitmapSource format for use in WPF
                 var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 
-                // Enregistrer l'image
-                var encoder = new PngBitmapEncoder(); // L'encodeur peut etre changer selon le format d'image souhaite
+                // Save image
+                var encoder = new PngBitmapEncoder(); // The encoder can be changed according to the image format required.
                 encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
 
-                filePath = this.TempPathFileTextBox.Text; // Chemin de sauvegarde de l'image
-                filePath = filePath + "\\test.png";
+                filePath = this.TempPathFileTextBox.Text; // Image save path
+                filePath = filePath + "\\screenshotUploadedToDiscord.png";
 
-                // TODO: tester filepath
+                // TODO: test filepath
 
                 using (var stream = File.Create(filePath))
                 {
@@ -99,9 +116,15 @@ namespace AutoUploadScreenshotToDiscord
 
             if (buttonClicked == null) { return; }
 
+            Properties.Settings.Default.WebhookURL = this.URLTextBox.Text;
+            Properties.Settings.Default.Filepath = this.TempPathFileTextBox.Text;
+            Properties.Settings.Default.Save();
+
             if (buttonClicked.Content.ToString() == "Start") this.URLTextBox.IsEnabled = false;
             else this.URLTextBox.IsEnabled = true;
 
+            this.ShortcutButton.IsEnabled = buttonClicked.Content.ToString() == "Start" ? false : true;
+            this.FilepathButton.IsEnabled = buttonClicked.Content.ToString() == "Start" ? false : true;
             buttonClicked.Content = buttonClicked.Content.ToString() == "Start" ? "Stop" : "Start";
 
             saveHotKey.CanExecute = !saveHotKey.CanExecute;
@@ -125,11 +148,12 @@ namespace AutoUploadScreenshotToDiscord
         {
             if (!isWaitingForKey) return;
 
-            shortcutToScreen = e.Key;
+            this.updateShortcut(e.Key);
+        }
 
-            // TODO: wait 1sec to not call key press event on setting the shortcut
-
-            //Remove old hotkey
+        private void updateShortcut(Key shortcutToScreen)
+        {
+            // Remove old hotkey
             HotkeysManager.RemoveHotkey(saveHotKey);
 
             // Create hotkey
@@ -137,6 +161,9 @@ namespace AutoUploadScreenshotToDiscord
 
             // Add hotkey
             HotkeysManager.AddHotkey(saveHotKey);
+
+            Properties.Settings.Default.Shortcut = saveHotKey.Key.ToString();
+            Properties.Settings.Default.Save();
 
             man.Set();
         }
@@ -174,7 +201,7 @@ namespace AutoUploadScreenshotToDiscord
 
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {
-            Environment.Exit(0);
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void TempPathFileButton_Click(object sender, RoutedEventArgs e)
@@ -182,7 +209,7 @@ namespace AutoUploadScreenshotToDiscord
             FolderBrowserDialog diag = new FolderBrowserDialog();
             if (diag.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                webHookUrl                      = diag.SelectedPath;  // selected folder path
+                webHookUrl                      = diag.SelectedPath;  // Selected folder path
                 this.TempPathFileTextBox.Text   = diag.SelectedPath;
             }
         }

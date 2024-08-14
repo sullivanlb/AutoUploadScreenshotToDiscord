@@ -7,8 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="314" Width="390" KeyDown="Window_KeyDown" ResizeMode="CanMinimize" Icon="/Images/icon.ico">
     <Grid Background="#FF5B3FAB">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="63*"/>
+            <ColumnDefinition Width="67*"/>
+        </Grid.ColumnDefinitions>
 
-        <tb:TaskbarIcon IconSource="Images/icon.ico" ToolTipText="UpDiscord">
+        <tb:TaskbarIcon IconSource="Images/icon.ico" ToolTipText="UpDiscord" Grid.ColumnSpan="2">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu Background="White">
                     <MenuItem Header="Open" Click="MenuItemOpen_Click" />
@@ -18,18 +22,9 @@
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
 
-        <TextBlock HorizontalAlignment="Center" Height="40" Margin="0,10,0,0" TextWrapping="Wrap" Text="UpDiscord" VerticalAlignment="Top" Width="381" FontStretch="SemiCondensed" FontSize="36" TextAlignment="Center" FontFamily="Montserrat Alternates Black" Foreground="White"/>
-        <Button Content="F10" HorizontalAlignment="Left" Margin="176,134,0,0" VerticalAlignment="Top" Width="185" Height="29" Click="ChangeShortcutToScreen_Click"/>
-        <Label Content="Raccourcis" HorizontalAlignment="Left" Height="28" Margin="23,134,0,0" VerticalAlignment="Top" Width="140" RenderTransformOrigin="0.5,0.5" ClipToBounds="True" SnapsToDevicePixels="True" BorderThickness="2,2,2,2" FontFamily="Montserrat SemiBold" FontSize="14">
-            <Label.BorderBrush>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF995CCE" Offset="1"/>
-                </LinearGradientBrush>
-            </Label.BorderBrush>
-            <Label.Background>
-                <SolidColorBrush Color="White" Opacity="1"/>
-            </Label.Background>
+        <TextBlock HorizontalAlignment="Center" Height="40" Margin="0,10,0,0" TextWrapping="Wrap" Text="UpDiscord" VerticalAlignment="Top" Width="382" FontStretch="SemiCondensed" FontSize="36" TextAlignment="Center" FontFamily="Montserrat Alternates Black" Foreground="White" Grid.ColumnSpan="2"/>
+        <Button x:Name="ShortcutButton" Content="F10" HorizontalAlignment="Left" Margin="180,0,0,0" VerticalAlignment="Center" Width="181" Height="29" Click="ChangeShortcutToScreen_Click" Grid.ColumnSpan="2"/>
+        <Label Content="Shortcut:" HorizontalAlignment="Left" Height="33" Margin="23,134,0,0" VerticalAlignment="Top" Width="121" RenderTransformOrigin="0.5,0.5" ClipToBounds="True" SnapsToDevicePixels="True" BorderThickness="2,2,2,2" FontFamily="Segoe UI Semibold" Foreground="White" FontSize="16">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -39,14 +34,8 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <Button Content="Start" HorizontalAlignment="Center" Height="38" Margin="0,236,0,0" VerticalAlignment="Top" Width="208" Click="Start_Click"/>
-        <Label Content="URL du Webhook" HorizontalAlignment="Left" Height="39" Margin="21,70,0,0" VerticalAlignment="Top" Width="142" RenderTransformOrigin="0.5,0.5" ClipToBounds="True" SnapsToDevicePixels="True" Background="White" BorderThickness="2,2,2,2" FontFamily="Montserrat SemiBold">
-            <Label.BorderBrush>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF995CCE" Offset="1"/>
-                </LinearGradientBrush>
-            </Label.BorderBrush>
+        <Button Content="Start" HorizontalAlignment="Left" Height="38" Margin="91,236,0,0" VerticalAlignment="Top" Width="208" Click="Start_Click" Grid.ColumnSpan="2"/>
+        <Label Content="Webhook's URL:" HorizontalAlignment="Left" Height="35" Margin="21,70,0,0" VerticalAlignment="Top" Width="133" RenderTransformOrigin="0.5,0.5" ClipToBounds="True" SnapsToDevicePixels="True" BorderThickness="2,2,2,2" FontFamily="Segoe UI Semibold" Foreground="White" FontSize="16">
             <Label.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -56,14 +45,14 @@
                 </TransformGroup>
             </Label.RenderTransform>
         </Label>
-        <TextBox x:Name="URLTextBox" x:FieldModifier="public" HorizontalAlignment="Left" Margin="180,70,0,0" TextWrapping="Wrap" Text="URL" VerticalAlignment="Top" Width="185" Height="40" Background="White" CaretBrush="#FFB700FF" UndoLimit="500" Cursor="IBeam">
+        <TextBox x:Name="URLTextBox" x:FieldModifier="public" HorizontalAlignment="Left" Margin="180,70,0,0" TextWrapping="Wrap" Text="URL" VerticalAlignment="Top" Width="185" Height="40" Background="White" CaretBrush="#FFB700FF" UndoLimit="500" Cursor="IBeam" Grid.ColumnSpan="2">
             <TextBox.BorderBrush>
                 <SolidColorBrush Color="#FFABADB3" Opacity="0"/>
             </TextBox.BorderBrush>
         </TextBox>
-        <Separator HorizontalAlignment="Center" Margin="0,110,0,0" VerticalAlignment="Top" Height="24" Width="332"/>
-        <Button Content="Choisir le fichier temporaire" HorizontalAlignment="Center" Margin="0,179,0,0" VerticalAlignment="Top" Click="TempPathFileButton_Click" Width="208"/>
-        <TextBox x:Name="TempPathFileTextBox" HorizontalAlignment="Center" Margin="0,204,0,0" TextWrapping="Wrap" Text="ex: C:/temp" VerticalAlignment="Top" Width="208" Foreground="White" BorderBrush="White" IsReadOnly="True" TextAlignment="Center">
+        <Separator HorizontalAlignment="Center" Margin="0,110,0,0" VerticalAlignment="Top" Height="24" Width="294" Grid.ColumnSpan="2"/>
+        <Button x:Name="FilepathButton" Content="Choose the directory" HorizontalAlignment="Left" Margin="91,179,0,0" VerticalAlignment="Top" Click="TempPathFileButton_Click" Width="208" Grid.ColumnSpan="2" ToolTip="Choose the directory where the temporary image will be stored."/>
+        <TextBox x:Name="TempPathFileTextBox" HorizontalAlignment="Left" Margin="91,204,0,0" TextWrapping="Wrap" Text="ex: C:/temp" VerticalAlignment="Top" Width="208" Foreground="White" BorderBrush="White" IsReadOnly="True" TextAlignment="Center" ClipToBounds="True" Grid.ColumnSpan="2">
             <TextBox.Background>
                 <SolidColorBrush Color="White" Opacity="0"/>
             </TextBox.Background>
