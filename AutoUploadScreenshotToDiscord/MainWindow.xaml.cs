@@ -24,9 +24,8 @@ namespace AutoUploadScreenshotToDiscord
 
         GlobalHotkey saveHotKey;
 
-        ManualResetEvent man = new ManualResetEvent(false);
-
-        string webHookUrl; 
+        readonly ManualResetEvent man = new(false);
+        private string webHookUrl; 
 
         public MainWindow()
         {
@@ -49,7 +48,7 @@ namespace AutoUploadScreenshotToDiscord
                 KeyConverter converter = new KeyConverter();
                 Key myKey = (Key)converter.ConvertFromString(Properties.Settings.Default.Shortcut);
 
-                updateShortcut(myKey);
+                UpdateShortcut(myKey);
                 shortcutToScreen = myKey;
 
                 this.ShortcutButton.Content = shortcutToScreen;
@@ -96,14 +95,12 @@ namespace AutoUploadScreenshotToDiscord
                 encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
 
                 filePath = this.TempPathFileTextBox.Text; // Image save path
-                filePath = filePath + "\\screenshotUploadedToDiscord.png";
+                filePath += "\\screenshotUploadedToDiscord.png";
 
                 // TODO: test filepath
 
-                using (var stream = File.Create(filePath))
-                {
-                    encoder.Save(stream);
-                }
+                using var stream = File.Create(filePath);
+                encoder.Save(stream);
             }
 
             SendDiscordMessage(filePath);
@@ -112,9 +109,7 @@ namespace AutoUploadScreenshotToDiscord
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            Button buttonClicked = sender as Button;
-
-            if (buttonClicked == null) { return; }
+            if (sender is not Button buttonClicked) { return; }
 
             Properties.Settings.Default.WebhookURL = this.URLTextBox.Text;
             Properties.Settings.Default.Filepath = this.TempPathFileTextBox.Text;
@@ -123,8 +118,8 @@ namespace AutoUploadScreenshotToDiscord
             if (buttonClicked.Content.ToString() == "Start") this.URLTextBox.IsEnabled = false;
             else this.URLTextBox.IsEnabled = true;
 
-            this.ShortcutButton.IsEnabled = buttonClicked.Content.ToString() == "Start" ? false : true;
-            this.FilepathButton.IsEnabled = buttonClicked.Content.ToString() == "Start" ? false : true;
+            this.ShortcutButton.IsEnabled = buttonClicked.Content.ToString() != "Start";
+            this.FilepathButton.IsEnabled = buttonClicked.Content.ToString() != "Start";
             buttonClicked.Content = buttonClicked.Content.ToString() == "Start" ? "Stop" : "Start";
 
             saveHotKey.CanExecute = !saveHotKey.CanExecute;
@@ -148,10 +143,10 @@ namespace AutoUploadScreenshotToDiscord
         {
             if (!isWaitingForKey) return;
 
-            this.updateShortcut(e.Key);
+            this.UpdateShortcut(e.Key);
         }
 
-        private void updateShortcut(Key shortcutToScreen)
+        private void UpdateShortcut(Key shortcutToScreen)
         {
             // Remove old hotkey
             HotkeysManager.RemoveHotkey(saveHotKey);
@@ -168,10 +163,10 @@ namespace AutoUploadScreenshotToDiscord
             man.Set();
         }
 
-        private async void SendDiscordMessage(string _filepath)
+        private void SendDiscordMessage(string _filepath)
         {
-            HttpClient client = new HttpClient();
-            MultipartFormDataContent content = new MultipartFormDataContent();
+            HttpClient client = new();
+            MultipartFormDataContent content = [];
 
             var file = File.ReadAllBytes(_filepath);
             content.Add(new ByteArrayContent(file, 0, file.Length), Path.GetExtension(_filepath), _filepath);
@@ -206,7 +201,7 @@ namespace AutoUploadScreenshotToDiscord
 
         private void TempPathFileButton_Click(object sender, RoutedEventArgs e)
         {
-            FolderBrowserDialog diag = new FolderBrowserDialog();
+            FolderBrowserDialog diag = new();
             if (diag.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 webHookUrl                      = diag.SelectedPath;  // Selected folder path
