@@ -35,15 +35,15 @@ namespace AutoUploadScreenshotToDiscord
             HotkeysManager.SetupSystemHook();
             HotkeysManager.RequiresModifierKey = false;
 
-            if (Properties.Settings.Default.WebhookURL != null)
+            if (Properties.Settings.Default.WebhookURL != "")
             {
                 this.URLTextBox.Text = Properties.Settings.Default.WebhookURL;
             }
-            if (Properties.Settings.Default.Filepath != null)
+            if (Properties.Settings.Default.Filepath != "")
             {
                 this.TempPathFileTextBox.Text = Properties.Settings.Default.Filepath;
             }
-            if (Properties.Settings.Default.Shortcut != null)
+            if (Properties.Settings.Default.Shortcut != "")
             {
                 KeyConverter converter = new KeyConverter();
                 Key myKey = (Key)converter.ConvertFromString(Properties.Settings.Default.Shortcut);
@@ -144,10 +144,14 @@ namespace AutoUploadScreenshotToDiscord
             if (!isWaitingForKey) return;
 
             this.UpdateShortcut(e.Key);
+
+            man.Set();
         }
 
         private void UpdateShortcut(Key shortcutToScreen)
         {
+            this.shortcutToScreen = shortcutToScreen;
+
             // Remove old hotkey
             HotkeysManager.RemoveHotkey(saveHotKey);
 
@@ -159,8 +163,6 @@ namespace AutoUploadScreenshotToDiscord
 
             Properties.Settings.Default.Shortcut = saveHotKey.Key.ToString();
             Properties.Settings.Default.Save();
-
-            man.Set();
         }
 
         private void SendDiscordMessage(string _filepath)

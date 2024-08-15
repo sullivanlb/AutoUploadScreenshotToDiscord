@@ -13,11 +13,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Publish|Any CPU = Publish|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Publish|Any CPU.Build.0 = Publish|Any CPU
 		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE3CFB1C-0CB3-42AE-BA77-A075E3993FDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
