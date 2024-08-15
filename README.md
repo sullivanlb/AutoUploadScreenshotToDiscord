@@ -2,7 +2,7 @@
 
 This application will run in the background and allow you to have a shortcut that will automatically take a screenshot and send it to the discord channel of your choice!
 
-![AutoUploadScreenshotToDiscordIcon](https://github.com/user-attachments/assets/420b149d-a0ac-4146-8915-4f35ee3b6501)
+![AutoUploadScreenshotToDiscordIcon](https://github.com/user-attachments/assets/936404da-1cad-46e1-834b-0bae72d9b0b0)
 
 ## How does it works ?
 
